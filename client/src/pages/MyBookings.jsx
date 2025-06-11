@@ -44,9 +44,34 @@ const MyBookings = () => {
                         </div>
                     </div>
                     {/* date & timings */}
-                    <div></div>
+                    <div className='flex felx-row md:items-center md:gap-12 mt-3 gap-8'>
+                        <div>
+                            <p>Check-In</p>
+                            <p className='className="textgray-500 text-sm'>
+                                {new Date(booking.checkInDate).toDateString()}
+                            </p>
+                        </div>
+                        <div>
+                            <p>Check-Out</p>
+                            <p className='className="text-gray-500 text-sm"'>
+                                {new Date(booking.checkOutDate).toDateString()}
+                            </p>
+                        </div>
+                    </div>
                     {/* payment status */}
-                    <div></div>
+                    <div className='flex flex-col items-start justify-center pt-3'>
+                        <div className='flex items-center gap-8'>
+                            <div className={` h-3 w-3 rounded-full ${booking.isPaid ? "bg-green-500" : "bg-red-500"}`}>
+                                <p className={`text-sm ${booking.isPaid ? "text-green-500" : "text-red-500"}`}>
+                                     {booking.isPaid ? "Paid" : "Unpaid"}
+                                </p>
+                             </div>
+                             {!booking.isPaid && (
+                                <button className='px-4 py-1.5 mt-8 text-xs border border-gray-400 rounded-full
+                                hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
+                             )}
+                        </div>
+                    </div>
                 </div>
             ))}
         </div>
