@@ -29,7 +29,7 @@ const App = () => {
           <Route path='/rooms/:id' element={<RoomDetails />} />
           <Route path='/my-bookings' element={<MyBookings />} />
           <Route path='/owner' element={<Layout />}>
-             <Route index element={<Dashboard />} />
+             <Route index element={<Dashboard/>} />
              <Route path="add-room" element={<AddRoom />} />
              <Route path="list-room" element={<ListRoom />} />
              </Route>

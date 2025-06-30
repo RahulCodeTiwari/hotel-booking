@@ -7,7 +7,7 @@ const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(dashboardDummyData)
 
   return (
-    <div>
+    <div className='mt-8'>
         <Title align='left' font='outfit' title='Dashboard' subTitle='Monitor your room listings, track bookings and analyze revenue-all
         in one place. Stay updated with real-time insights to ensure smooth operations.' />
 
@@ -80,3 +80,6 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
+
+
