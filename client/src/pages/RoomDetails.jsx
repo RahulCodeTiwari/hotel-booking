@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { assets, facilityIcons, roomCommonData, roomsDummyData } from '../assets/assets'
+import { assets, facilityIcons, roomCommonData } from '../assets/assets'
 import StarRating from '../components/StarRating'
 
 const RoomDetails = () => {
     const {id} = useParams()
+    const {rooms, getToken, axios, navigate} = useAppContext()
     const [room, setRoom] = useState(null)
     const [mainImage, setMainImage] = useState(null)
+    const [checkInDate, setCheckInDate] = useState(null);
+    const [checkOutDate, setCheckOutDate] = useState(null);
+    const [guests, setGuests] = useState(1);
+
+    const [isAvailable, setIsAvailable] = useState(false);
 
     useEffect(() => {
         const room = roomsDummyData.find(room => room._id === id)
         room && setRoom(room)
         room && setMainImage(room.images[0])
-    },[])
+    },[rooms])
 
 
   return room && (
@@ -102,7 +108,7 @@ const RoomDetails = () => {
             <button type='submit' className='bg-primary hover:bg-primary-dull
             active:scale-95 transition-all text-white rounded-md max-mda;w-full
             max-md:mt-6 md:px-25 py-3 md:py-4 text-base cursor-pointer'>
-                Check Availability
+                {isAvailable ? "Book Now" : "Check Availability" }
             </button>
          </form>
 

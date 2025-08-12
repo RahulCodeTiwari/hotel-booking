@@ -3,6 +3,7 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { set } from "mongoose";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -18,6 +19,20 @@ export const AppProvider = ({ children })=> {
     const [isOwner, setIsOwner] = useState(false);
     const [showHotelReg, setShowHotelReg] = useState(false)
     const [searchedCities, setSearchedCities] = useState([])
+    const [rooms, setRooms] = useState([])
+
+    const fetchRooms = async () => {
+        try {
+            const { data } = await axios.get('/api/rooms')
+                if(data.success){
+                    setRooms(data.rooms)
+                }else {
+                    toast.error(data.message)
+                }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
 
 
     const fetchUser = async ()=> {
@@ -44,6 +59,10 @@ export const AppProvider = ({ children })=> {
         }
     }, [user])
 
+    useEffect(() => {
+        fetchRooms();
+    }, [])
+
     const value = {
         currency,
         navigate,
@@ -56,6 +75,8 @@ export const AppProvider = ({ children })=> {
         searchedCities,
         setSearchedCities,
         axios,
+        rooms,
+        setRooms
     }
 
     return (
