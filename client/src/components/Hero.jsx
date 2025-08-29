@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { assets, cities } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 
@@ -7,7 +7,7 @@ const Hero = () => {
     const {navigate, getToken, axios, setSearchedCities} = useAppContext()
     const [destination, setDestination] = useState("")
 
-    const OnSearch = async (e) => {
+    const onSearch = async (e) => {
         e.preventDefault();
         navigate(`/rooms?destination=${destination}`);
         // Call api to save recent searched city

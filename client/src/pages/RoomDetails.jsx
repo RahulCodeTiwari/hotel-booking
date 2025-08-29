@@ -14,6 +14,59 @@ const RoomDetails = () => {
 
     const [isAvailable, setIsAvailable] = useState(false);
 
+    // Check if there is room is Available
+    const checkAvailability = async ()=> {
+        try {
+            // Check is Check-In Date is greater than Check-Out Date
+            if(checkInDate >= checkOutDate){
+                toast.error('Check-In Date should be less than Check-Out Date')
+                return;
+            }
+            const {data} = await axios.post('/api/bookings/check-availability', 
+                {room: IdleDeadline, checkInDate, checkOutDate})
+                if(data.success){
+                    if(data.isAvailability){
+                        setIsAvailable(true)
+                        toast.success('Room is Available')
+                    }else{
+                        setIsAvailable(false)
+                        toast.error('Room is not Available for the selected dates')
+                    }
+                }else{
+                    toast.error(data.message)
+                }
+        } catch (error) {
+            toast.error(error.message)
+            
+        }
+    }
+
+    // onSubmitHandler function to check availability & book the room
+    const onSubmitHandler = async (e)=> {
+        try {
+            e.preventDefault();
+            if(!isAvailable){
+                return checkAvailability();
+            }else{
+                const {data} = await axios.post('/api/bookings/book', {room: id,
+                    checkInDate, checkOutDate, guests, paymentMethod: "Pay At Hotel"},
+                    {headers: {Authorization: `Bearer ${await getToken()}`}}) 
+
+                    if(data.success){
+                        toast.success(data.message)
+                        navigate('/my-bookings')
+                        scrollTo(0, 0)
+                    }else{
+                        toast.error(data.message)
+                    }
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+
+
+
     useEffect(() => {
         const room = roomsDummyData.find(room => room._id === id)
         room && setRoom(room)
@@ -78,7 +131,7 @@ const RoomDetails = () => {
         </div>
 
         {/* CheckIn CheckOut Form */}
-        <form className='flex flex-col md:flex-row items-start md:items-center justify-between
+        <form onSubmit={onSubmitHandler} className='flex flex-col md:flex-row items-start md:items-center justify-between
          bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl mx-auto mt-16 max-w-6xl'>
 
             <div className='flex flex-col flex-wrap md:flex-row items-start 
@@ -86,20 +139,24 @@ const RoomDetails = () => {
 
                 <div className='flex flex-col'>
                     <label htmlFor="checkInDate" className='font-medium'>Check-In</label>
-                    <input type="date" id='checkInDate' placeholder='Check-In' 
+                    <input onChange={(e) => setCheckInDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    type="date" id='checkInDate' placeholder='Check-In' 
                     className='w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                 </div>
 
                  <div className='flex flex-col'>
                     <label htmlFor="checkOutDate" className='font-medium'>Check-Out</label>
-                    <input type="date" id='checkOutDate' placeholder='Check-Out' 
+                    <input onChange={(e) => setCheckOutDate(e.target.value)}
+                    min={checkInDate} disabled={!checkInDate} 
+                    type="date" id='checkOutDate' placeholder='Check-Out' 
                     className='w-full rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                 </div>
 
                 <div className='flex flex-col'>
                     <label htmlFor="guests" className='font-medium'>Guests</label>
-                    <input type="date" id='guests' placeholder='0' 
-                    className='max-w-20 rounded border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
+                    <input onChange={(e) =>setGuests(e.target.value)} type="number" id='guests' placeholder='1' 
+                    className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required />
                 </div>
 
 
